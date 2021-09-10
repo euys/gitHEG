@@ -1,27 +1,13 @@
-"""
-mostly from
-https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py
-Usage:
-  # Create train data:
-  python generate_tfrecord.py \
-      --csv_input=../data/training/data/train_labels.csv \
-      --output_path=../data/training/data/train.record
-  # Create test data:
-    python generate_tfrecord.py \
-        --csv_input=../data/training/data/test_labels.csv \
-        --output_path=../data/training/data/test.record
-"""
-
-
 import os
 import io
 import pandas as pd
-import tensorflow as tf
+# noinspection PyUnresolvedReferences
+import tensorflow.compat.v1 as tf
 
 from PIL import Image
 from collections import namedtuple
 
-flags = tf.app.flags
+flags = tf.compat.v1.flags
 flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 FLAGS = flags.FLAGS
@@ -36,23 +22,23 @@ def class_text_to_int(row_label):
 
 
 def int64_feature(value):
-    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+    return tf.compat.v1.train.Feature(int64_list=tf.compat.v1.train.Int64List(value=[value]))
 
 
 def int64_list_feature(value):
-    return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
+    return tf.compat.v1.train.Feature(int64_list=tf.compat.v1.train.Int64List(value=value))
 
 
 def bytes_feature(value):
-    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+    return tf.compat.v1.train.Feature(bytes_list=tf.compat.v1.train.BytesList(value=[value]))
 
 
 def bytes_list_feature(value):
-    return tf.train.Feature(bytes_list=tf.train.BytesList(value=value))
+    return tf.compat.v1.train.Feature(bytes_list=tf.compat.v1.train.BytesList(value=value))
 
 
 def float_list_feature(value):
-    return tf.train.Feature(float_list=tf.train.FloatList(value=value))
+    return tf.compat.v1.train.Feature(float_list=tf.compat.v1.train.FloatList(value=value))
 
 
 def split(df, group):
@@ -63,14 +49,14 @@ def split(df, group):
 
 
 def create_tf_example(group, path):
-    with tf.gfile.GFile(os.path.join(path, '{}'.format(group.filename)),
+    with tf.compat.v1.gfile.GFile(os.path.join(path, '{}'.format(group.filename)),
                         'rb') as fid:
         encoded_jpg = fid.read()
     encoded_jpg_io = io.BytesIO(encoded_jpg)
     image = Image.open(encoded_jpg_io)
     width, height = image.size
 
-    filename = group.filename.encode('utf8')
+    filename = group.filename.encode('utf-8')
     image_format = b'jpg'
     if ".png" in group.filename:
         image_format = b'png'
@@ -86,10 +72,10 @@ def create_tf_example(group, path):
         xmaxs.append(row['xmax'] / width)
         ymins.append(row['ymin'] / height)
         ymaxs.append(row['ymax'] / height)
-        classes_text.append(row['class'].encode('utf8'))
+        classes_text.append(row['class'].encode('utf-8'))
         classes.append(class_text_to_int(row['class']))
 
-    tf_example = tf.train.Example(features=tf.train.Features(feature={
+    tf_example = tf.compat.v1.train.Example(features=tf.compat.v1.train.Features(feature={
         'image/height': int64_feature(height),
         'image/width': int64_feature(width),
         'image/filename': bytes_feature(filename),
@@ -107,8 +93,8 @@ def create_tf_example(group, path):
 
 
 def main(_):
-    writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
-    path = os.path.join('../data/training/image')
+    writer = tf.compat.v1.python_io.TFRecordWriter(FLAGS.output_path)
+    path = os.path.join("C:\\Users\\admin\\Desktop\\bikerider-detector\\data\\training\\image")
     examples = pd.read_csv(FLAGS.csv_input)
     grouped = split(examples, 'filename')
     for group in grouped:
@@ -121,4 +107,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()

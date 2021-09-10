@@ -1,9 +1,3 @@
-"""
-split dataset into train and test set.
-Usage:
-    python split_train_test.py --test_ratio=0.3
-"""
-
 
 import os
 import argparse
@@ -14,7 +8,6 @@ np.random.seed(1)
 
 
 def main():
-    '''main function'''
     parser = argparse.ArgumentParser()
     parser.add_argument("--test_ratio", type=float, default=0.2,
                         help="ratio of test set")
@@ -23,9 +16,8 @@ def main():
 
 
 def split(test_ratio):
-    '''split function'''
     print(test_ratio)
-    csv_dir = "../data/training/data"
+    csv_dir = "C:\\Users\\admin\\Desktop\\bikerider-detector\\data\\training\\data"
     full_labels = pd.read_csv(os.path.join(csv_dir, 'bikerider_labels.csv'))
     gb = full_labels.groupby('filename')
     grouped_list = [gb.get_group(x) for x in gb.groups]

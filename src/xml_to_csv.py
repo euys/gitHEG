@@ -1,7 +1,3 @@
-"""
-mostly from:
-    https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py
-"""
 
 import os
 import glob
@@ -10,18 +6,14 @@ import pandas as pd
 
 
 def main():
-    '''main function'''
-    anno_path = os.path.join("..", "..", "data", "training",
-                             "annotation")
-    csv_path = os.path.join("..", "..", "data", "training",
-                            "data", "bikerider_labels.csv")
+    anno_path = os.path.join("C:\\Users\\admin\\Desktop\\bikerider-detector\\data\\training\\annotation")
+    csv_path = os.path.join("C:\\Users\\admin\\Desktop\\bikerider-detector\\data\\training\\data\\bikerider_labels.csv")
     xml_df = xml_to_csv(anno_path)
     xml_df.to_csv(csv_path, index=None)
     print('Successfully converted xml to csv.')
 
 
 def xml_to_csv(path):
-    '''merge xmls to csv'''
     xml_list = []
     for xml_file in glob.glob(path + '/*.xml'):
         tree = ET.parse(xml_file)

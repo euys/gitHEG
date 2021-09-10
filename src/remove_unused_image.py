@@ -1,19 +1,27 @@
-"""
-script for removing unused image (images without annotation)
-Usage:
-    python remove_unused_image.py --image_dir=/image/dir --anno_dir=/anno/dir \
-        --dest_dir=/dest/dir
-"""
-
 import argparse
 import os
 import fnmatch
 import glob
 import shutil
 
+import sys
+try:
+    import numpy as np
+    import pyfits as pf
+    import scipy.ndimage as nd
+    import pylab as pl
+    import os
+    import heapq
+    from scipy.optimize import leastsq
+
+except ImportError:
+    print
+    'Error: missing one of the libraries (numpy, pyfits, scipy, matplotlib)'
+    sys.exit()
+sys.path.append(os.path.dirname(os.path.abspath(path)))
+
 
 def main():
-    '''main function'''
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_dir", help="directory of images")
     parser.add_argument("--anno_dir", help="directory of annotations")
@@ -23,7 +31,6 @@ def main():
 
 
 def leave_unused(image_dir, anno_dir, dest_dir):
-    '''function for remove images'''
     print(image_dir)
     print(anno_dir)
     print(dest_dir)
@@ -41,7 +48,6 @@ def leave_unused(image_dir, anno_dir, dest_dir):
 
 
 def get_filenames(path, pattern):
-    ''' return list of annotation xml'''
     pattern = "*.xml"
     names = [fn.split(".")[0] for fn in
              fnmatch.filter(os.listdir(path), pattern)]
@@ -50,7 +56,6 @@ def get_filenames(path, pattern):
 
 
 def is_annotated(image_path, annotated_names):
-    '''returns whether the image is annotatetd'''
     basename = os.path.basename(image_path)
     image_filename = basename.split(".")[0]
     return image_filename in annotated_names
